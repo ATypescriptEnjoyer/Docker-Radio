@@ -1,0 +1,13 @@
+version: '3.7'
+services:
+  caster:
+    build: .
+    container_name: caster
+    restart: always
+    ports:
+      - 8000:8000
+    volumes:
+      - ./casting/icecast.xml:/etc/icecast2/icecast.xml
+      - ./casting/playlist.txt:/etc/ices2/playlist.txt
+      - ./casting/ices-playlist.xml:/etc/ices2/ices-playlist.xml
+      - ./casting/songs:/etc/ices2/songs
