@@ -3,3 +3,9 @@ build
 
 *.ogg
 *.mp4
+
+icecast.xml
+ices-playlist.xml
+playlist.txt
+
+.env

@@ -31,11 +31,15 @@ export const Container = styled.div`
 export const Title = styled.h1`
   color: white;
   font-size: 70px;
+  padding: 0;
+  margin: 0;
 `;
 
 export const Subtitle = styled.h2`
+  padding: 0;
+  margin: 0 0 32px 0;
   color: white;
-  font-size: 50px;
+  font-size: 30px;
 `;
 
 export const MediaButton = styled.button`
@@ -123,4 +127,14 @@ export const VolumeSlider = styled(Slider)`
       box-shadow: none;
     }
   }
+`;
+
+export const InfoContainer = styled.div`
+  margin-left: 88px;
+  margin-top: 8px;
+`;
+
+export const Listeners = styled.span`
+  color: #32cd32;
+  font-size: 16px;
 `;
