@@ -5,7 +5,7 @@ services:
     container_name: caster
     restart: always
     ports:
-      - 8000:8000
+      - 4000:4000
     volumes:
       - ./casting/icecast.xml:/etc/icecast2/icecast.xml
       - ./casting/playlist.txt:/etc/ices2/playlist.txt
