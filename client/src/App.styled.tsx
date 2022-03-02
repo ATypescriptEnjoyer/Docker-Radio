@@ -94,6 +94,7 @@ export const SongTitle = styled.p`
   color: #32cd32;
   margin: 0;
   padding: 0;
+  text-transform: uppercase;
 `;
 
 export const SongArtist = styled.p`
@@ -101,6 +102,7 @@ export const SongArtist = styled.p`
   color: white;
   margin: 0;
   padding: 0;
+  text-transform: uppercase;
 `;
 
 export const VolumeBox = styled.div`
