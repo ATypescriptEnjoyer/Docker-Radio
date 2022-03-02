@@ -21,7 +21,7 @@ import { io } from 'socket.io-client';
 
 export const App = (): JSX.Element => {
   const [playing, setPlaying] = useState<boolean>(false);
-  const [volume, setVolume] = useState<number>(0.5);
+  const [volume, setVolume] = useState<number>(0.15);
   const playerRef = useRef<HTMLAudioElement>(null);
   const [listeners, setListeners] = useState(0);
   const [currentlyPlaying, setCurrentlyPlaying] = useState({
@@ -94,7 +94,7 @@ export const App = (): JSX.Element => {
               <VolumeSlider
                 value={volume}
                 min={0}
-                max={1}
+                max={0.3}
                 step={0.01}
                 onChange={(_event, value): void => handleVolumeChanged(value as number)}
               />
