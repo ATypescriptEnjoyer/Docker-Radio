@@ -39,6 +39,7 @@ export const App = (): JSX.Element => {
   useEffect(() => {
     const socket = io(process.env.REACT_APP_SOCKET_IO_CONNECTION || '', {
       reconnectionDelayMax: 10000,
+      path: '/socket',
     });
     socket.on('LISTENER_COUNT', (data) => {
       setListeners(data);

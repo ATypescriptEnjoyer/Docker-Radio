@@ -31,7 +31,9 @@ const checkMetadata = () => {
   });
 };
 
-const io = new Server(server);
+const io = new Server(server, {
+  path: "/socket",
+});
 
 io.on("connection", (socket) => {
   connectedUsers++;
