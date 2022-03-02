@@ -26,6 +26,12 @@ COPY --from=client /app/build /app/build
 COPY start.sh .
 RUN chmod +x start.sh
 
+WORKDIR /app
+
+RUN yarn install
+
 EXPOSE 4000
+
+WORKDIR /
 
 CMD ["/start.sh"]
