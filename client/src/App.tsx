@@ -21,6 +21,7 @@ import { io } from 'socket.io-client';
 
 export const App = (): JSX.Element => {
   const [playing, setPlaying] = useState<boolean>(false);
+  const [streamUrl, setStreamUrl] = useState<string>(process.env.REACT_APP_STREAM_URL || '');
   const [volume, setVolume] = useState<number>(0.15);
   const playerRef = useRef<HTMLAudioElement>(null);
   const [listeners, setListeners] = useState(0);
@@ -61,7 +62,12 @@ export const App = (): JSX.Element => {
     if (playing) {
       playerRef?.current?.pause();
     } else {
-      playerRef.current?.play();
+      try {
+        playerRef.current?.play();
+      } catch (error) {
+        setStreamUrl(process.env.REACT_APP_BACKUP_STREAM_URL || ''); //switch to legacy mpeg stream
+        playerRef.current?.play();
+      }
     }
     setPlaying(!playing);
   };
@@ -75,7 +81,7 @@ export const App = (): JSX.Element => {
 
   return (
     <AppComponent>
-      <audio ref={playerRef} src={process.env.REACT_APP_STREAM_URL} />
+      <audio ref={playerRef} src={streamUrl} />
       <Background autoPlay muted loop src="bg.mp4" />
       <Container>
         <Title>Phonk.Live</Title>

@@ -59,6 +59,7 @@
             <port>8000</port>
             <password>hackme</password>
             <mount>/stream</mount>
+            
             <yp>0</yp>   <!-- allow stream to be advertised on YP, default 0 -->
 
             <!-- Reconnect parameters:

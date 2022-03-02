@@ -12,7 +12,7 @@ FROM ubuntu:latest
 
 RUN apt update && apt upgrade -y 
 
-RUN apt-get install icecast2 ices2 curl -qq
+RUN apt-get install icecast2 ices2 curl ffmpeg -qq
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install nodejs -qq
 RUN sed -i "s#ENABLE=.*#ENABLE=true#" /etc/default/icecast2
