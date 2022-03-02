@@ -31,14 +31,7 @@ const checkMetadata = () => {
   });
 };
 
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-  allowEIO3: true,
-});
+const io = new Server(server);
 
 io.on("connection", (socket) => {
   connectedUsers++;
