@@ -6,7 +6,6 @@ services:
     restart: always
     ports:
       - 4000:4000
-      - 8000:8000
     volumes:
       - ./casting/icecast.xml:/etc/icecast2/icecast.xml
       - ./casting/playlist.txt:/etc/ices2/playlist.txt
