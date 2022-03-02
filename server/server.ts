@@ -1,6 +1,4 @@
 import "dotenv/config";
-import e from "express";
-
 import express from "express";
 import http from "http";
 import request from "request";
