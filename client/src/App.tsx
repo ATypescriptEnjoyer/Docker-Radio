@@ -58,12 +58,12 @@ export const App = (): JSX.Element => {
     };
   }, []);
 
-  const handleMediaButtonClick = (): void => {
+  const handleMediaButtonClick = async (): Promise<void> => {
     if (playing) {
       playerRef?.current?.pause();
     } else {
       try {
-        playerRef.current?.play();
+        await playerRef.current?.play();
       } catch (error) {
         setStreamUrl(process.env.REACT_APP_BACKUP_STREAM_URL || ''); //switch to legacy mpeg stream
         playerRef.current?.play();
