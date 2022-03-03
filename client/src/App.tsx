@@ -33,6 +33,9 @@ export const App = (): JSX.Element => {
   useEffect(() => {
     if (playerRef.current) {
       playerRef.current.volume = volume;
+      if (!playerRef.current.canPlayType || playerRef.current.canPlayType('media/ogg') === '') {
+        setStreamUrl(process.env.REACT_APP_BACKUP_STREAM_URL || '');
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playerRef]);
@@ -50,18 +53,20 @@ export const App = (): JSX.Element => {
         artist,
         title,
       });
-      navigator.mediaSession.metadata = new MediaMetadata({
-        artist,
-        title,
-        album: 'phonk.live',
-        artwork: [
-          {
-            src: 'https://phonk.live/artwork.png',
-            type: 'image/png',
-            sizes: '236x236',
-          },
-        ],
-      });
+      if (navigator.mediaSession) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          artist,
+          title,
+          album: 'phonk.live',
+          artwork: [
+            {
+              src: 'https://phonk.live/artwork.png',
+              type: 'image/png',
+              sizes: '236x236',
+            },
+          ],
+        });
+      }
     });
     return () => {
       socket.off('LISTENER_COUNT');
@@ -74,12 +79,7 @@ export const App = (): JSX.Element => {
     if (playing) {
       playerRef?.current?.pause();
     } else {
-      try {
-        await playerRef.current?.play();
-      } catch (error) {
-        setStreamUrl(process.env.REACT_APP_BACKUP_STREAM_URL || ''); //switch to legacy mpeg stream
-        playerRef.current?.play();
-      }
+      playerRef.current?.play();
     }
     setPlaying(!playing);
   };
@@ -93,7 +93,7 @@ export const App = (): JSX.Element => {
 
   return (
     <AppComponent>
-      <audio ref={playerRef} src={streamUrl} />
+      <audio ref={playerRef} src={playing ? streamUrl : ''} />
       <Background autoPlay muted loop src="bg.mp4" />
       <Container>
         <Title>Phonk.Live</Title>
