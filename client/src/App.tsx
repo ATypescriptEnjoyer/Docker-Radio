@@ -15,6 +15,7 @@ import {
   Subtitle,
   InfoContainer,
   Listeners,
+  TextContainer,
 } from './App.styled';
 import { PlayArrowOutlined, PauseOutlined, VolumeDownOutlined, VolumeOffOutlined } from '@mui/icons-material';
 import { io } from 'socket.io-client';
@@ -26,8 +27,8 @@ export const App = (): JSX.Element => {
   const playerRef = useRef<HTMLAudioElement>(null);
   const [listeners, setListeners] = useState(0);
   const [currentlyPlaying, setCurrentlyPlaying] = useState({
-    artist: '',
-    title: '',
+    artist: 'Loading Artist...',
+    title: 'Loading Title...',
   });
 
   useEffect(() => {
@@ -99,8 +100,10 @@ export const App = (): JSX.Element => {
       <audio ref={playerRef} />
       <Background autoPlay muted loop src="bg.mp4" />
       <Container>
-        <Title>Phonk.Live</Title>
-        <Subtitle>24/7 Phonk Radio</Subtitle>
+        <TextContainer>
+          <Title>Phonk.Live</Title>
+          <Subtitle>24/7 Phonk Radio</Subtitle>
+        </TextContainer>
         <MediaContainer>
           <MediaButton onClick={handleMediaButtonClick}>
             {playing ? <PauseOutlined /> : <PlayArrowOutlined />}

@@ -8,6 +8,10 @@ export const App = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 500px) {
+    align-items: flex-start;
+  }
 `;
 
 export const Background = styled.video`
@@ -21,11 +25,22 @@ export const Background = styled.video`
   filter: brightness(10%);
 `;
 
+export const TextContainer = styled.div`
+  @media (max-width: 500px) {
+    margin-top: 24px;
+    flex: 1;
+  }
+`;
+
 export const Container = styled.div`
   display: flex;
   height: 40%;
   width: 80%;
   flex-direction: column;
+
+  @media (max-width: 500px) {
+    height: 60%;
+  }
 `;
 
 export const Title = styled.h1`
@@ -33,6 +48,10 @@ export const Title = styled.h1`
   font-size: 70px;
   padding: 0;
   margin: 0;
+
+  @media (max-width: 500px) {
+    font-size: 40px;
+  }
 `;
 
 export const Subtitle = styled.h2`
@@ -52,6 +71,7 @@ export const MediaButton = styled.button`
   justify-content: center;
   color: white;
   transition: all linear 0.25s;
+  align-self: center;
 
   &:hover {
     color: #32cd32;
@@ -74,6 +94,12 @@ export const MediaInfoBox = styled.div`
   display: flex;
   padding-left: 16px;
   box-sizing: border-box;
+
+  @media (max-width: 500px) {
+    flex-direction: column;
+    height: auto;
+    padding: 16px;
+  }
 `;
 
 export const MediaContainer = styled.div`
@@ -113,6 +139,10 @@ export const VolumeBox = styled.div`
   align-items: center;
   padding-right: 20px;
   box-sizing: border-box;
+
+  @supports (-webkit-touch-callout: none) {
+    display: none;
+  }
 `;
 
 export const VolumeSlider = styled(Slider)`
