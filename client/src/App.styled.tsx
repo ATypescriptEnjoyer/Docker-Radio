@@ -74,6 +74,7 @@ export const MediaButton = styled.button`
   align-self: center;
   grid-column-start: 1;
   grid-row-start: 1;
+  cursor: pointer;
 
   &:hover {
     color: #32cd32;
