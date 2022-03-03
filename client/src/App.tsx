@@ -13,7 +13,6 @@ import {
   VolumeSlider,
   VolumeBox,
   Subtitle,
-  InfoContainer,
   Listeners,
   TextContainer,
 } from './App.styled';
@@ -124,10 +123,8 @@ export const App = (): JSX.Element => {
               />
             </VolumeBox>
           </MediaInfoBox>
-        </MediaContainer>
-        <InfoContainer>
           <Listeners>{listeners} listening right now</Listeners>
-        </InfoContainer>
+        </MediaContainer>
       </Container>
     </AppComponent>
   );

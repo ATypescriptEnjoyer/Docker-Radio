@@ -9,7 +9,7 @@ export const App = styled.div`
   justify-content: center;
   align-items: center;
 
-  @media (max-width: 500px) {
+  @media (max-width: 600px) {
     align-items: flex-start;
   }
 `;
@@ -26,7 +26,7 @@ export const Background = styled.video`
 `;
 
 export const TextContainer = styled.div`
-  @media (max-width: 500px) {
+  @media (max-width: 600px) {
     margin-top: 24px;
     flex: 1;
   }
@@ -38,7 +38,7 @@ export const Container = styled.div`
   width: 80%;
   flex-direction: column;
 
-  @media (max-width: 500px) {
+  @media (max-width: 600px) {
     height: 60%;
   }
 `;
@@ -49,7 +49,7 @@ export const Title = styled.h1`
   padding: 0;
   margin: 0;
 
-  @media (max-width: 500px) {
+  @media (max-width: 600px) {
     font-size: 40px;
   }
 `;
@@ -72,6 +72,8 @@ export const MediaButton = styled.button`
   color: white;
   transition: all linear 0.25s;
   align-self: center;
+  grid-column-start: 1;
+  grid-row-start: 1;
 
   &:hover {
     color: #32cd32;
@@ -84,6 +86,10 @@ export const MediaButton = styled.button`
   svg {
     font-size: 40px;
   }
+
+  @media (max-width: 600px) {
+    grid-row-start: 2;
+  }
 `;
 
 export const MediaInfoBox = styled.div`
@@ -94,17 +100,22 @@ export const MediaInfoBox = styled.div`
   display: flex;
   padding-left: 16px;
   box-sizing: border-box;
+  grid-column-start: 2;
 
-  @media (max-width: 500px) {
+  @media (max-width: 600px) {
     flex-direction: column;
     height: auto;
     padding: 16px;
+    grid-column: span 2;
   }
 `;
 
 export const MediaContainer = styled.div`
-  display: flex;
-  gap: 24px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: max-content auto;
+  grid-column-gap: 24px;
+  grid-row-gap: 12px;
 `;
 
 export const SongDetails = styled.div`
@@ -161,12 +172,17 @@ export const VolumeSlider = styled(Slider)`
   }
 `;
 
-export const InfoContainer = styled.div`
-  margin-left: 88px;
-  margin-top: 8px;
-`;
-
 export const Listeners = styled.span`
   color: #32cd32;
   font-size: 16px;
+  grid-column-start: 2;
+  grid-row-start: 2;
+
+  @media (max-width: 600px) {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1d1f2b;
+  }
 `;
