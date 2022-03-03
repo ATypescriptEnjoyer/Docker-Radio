@@ -50,7 +50,7 @@ export const App = (): JSX.Element => {
         artist,
         title,
       });
-      navigator.mediaSession.metadata = {
+      navigator.mediaSession.metadata = new MediaMetadata({
         artist,
         title,
         album: 'phonk.live',
@@ -61,7 +61,7 @@ export const App = (): JSX.Element => {
             sizes: '236x236',
           },
         ],
-      };
+      });
     });
     return () => {
       socket.off('LISTENER_COUNT');
