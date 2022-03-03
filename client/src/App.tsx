@@ -33,7 +33,7 @@ export const App = (): JSX.Element => {
   useEffect(() => {
     if (playerRef.current) {
       playerRef.current.volume = volume;
-      if (!playerRef.current.canPlayType || playerRef.current.canPlayType('media/ogg') === '') {
+      if (!playerRef.current.canPlayType || playerRef.current.canPlayType('audio/ogg') === '') {
         setStreamUrl(process.env.REACT_APP_BACKUP_STREAM_URL || '');
       }
     }
@@ -76,10 +76,13 @@ export const App = (): JSX.Element => {
   }, []);
 
   const handleMediaButtonClick = async (): Promise<void> => {
+    if (!playerRef.current) return;
     if (playing) {
-      playerRef?.current?.pause();
+      playerRef.current.pause();
+      playerRef.current.src = ''; //prevent actual pausing or it starts to desync
     } else {
-      playerRef.current?.play();
+      playerRef.current.src = streamUrl;
+      playerRef.current.play();
     }
     setPlaying(!playing);
   };
@@ -93,7 +96,7 @@ export const App = (): JSX.Element => {
 
   return (
     <AppComponent>
-      <audio ref={playerRef} src={playing ? streamUrl : ''} />
+      <audio ref={playerRef} />
       <Background autoPlay muted loop src="bg.mp4" />
       <Container>
         <Title>Phonk.Live</Title>
