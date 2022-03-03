@@ -50,6 +50,18 @@ export const App = (): JSX.Element => {
         artist,
         title,
       });
+      navigator.mediaSession.metadata = {
+        artist,
+        title,
+        album: 'phonk.live',
+        artwork: [
+          {
+            src: 'https://phonk.live/artwork.png',
+            type: 'image/png',
+            sizes: '236x236',
+          },
+        ],
+      };
     });
     return () => {
       socket.off('LISTENER_COUNT');
