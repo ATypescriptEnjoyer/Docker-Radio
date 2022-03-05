@@ -6,10 +6,16 @@ import { Server } from "socket.io";
 
 const app = express();
 const server = http.createServer(app);
-const PORT = process.env.port || 4000;
-const source = process.env.SOURCE_STREAM || "";
-const backupSource = process.env.SOURCE_BACKUP_STREAM || "";
-const metadataUrl = process.env.SOURCE_METADATA || "";
+const PORT = process.env.PORT || 4000;
+
+const icecastUrl = "http://localhost:8000";
+const metadataEndpoint = "/status-json.xsl";
+const oggStream = process.env.OGG_STREAM_ENDPOINT || "/stream";
+const mpegStream = process.env.MPEG_STREAM_ENDPOINT || "/backup_stream";
+
+const sourceOggUrl = `${icecastUrl}${oggStream}`;
+const sourceMpegUrl = `${icecastUrl}${mpegStream}`;
+const metadataUrl = `${icecastUrl}${metadataEndpoint}`;
 
 let connectedUsers = 0;
 let metadataCheckInterval: NodeJS.Timeout | null = null;
@@ -20,8 +26,7 @@ const checkMetadata = () => {
     if (err) return;
     const metadata: { artist: string; title: string } =
       body.icestats.source.find(
-        (source: { listenurl: string }) =>
-          source.listenurl === "http://localhost:8000/stream"
+        (source: { listenurl: string }) => source.listenurl === sourceOggUrl
       );
     if (!metadata) {
       return;
@@ -57,18 +62,17 @@ io.on("connection", (socket) => {
     } else {
       clearInterval(metadataCheckInterval);
       metadataCheckInterval = null;
+      currentMetadata = { artist: "", title: "" };
     }
   });
 });
 
 app.use(express.static("build"));
 
-app.get("/stream", (req, res) => {
-  req.pipe(request.get(source)).pipe(res);
-});
+app.get(oggStream, (req, res) => req.pipe(request.get(sourceOggUrl)).pipe(res));
 
-app.get("/backup_stream", (req, res) => {
-  req.pipe(request.get(backupSource)).pipe(res);
-});
+app.get(mpegStream, (req, res) =>
+  req.pipe(request.get(sourceMpegUrl)).pipe(res)
+);
 
 server.listen(PORT);

@@ -1,46 +1,79 @@
-# Getting Started with Create React App
+# Phonk.live
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### 24/7 Radio Station, all contained within a docker container!
 
-## Available Scripts
+## Setup:
 
-In the project directory, you can run:
+### docker-compose.yml
 
-### `npm start`
+```
+version: '3.7'
+services:
+  caster:
+    build:
+      dockerfile: Dockerfile
+      args:
+        DOMAIN: phonk.live
+        OGG_STREAM_ENDPOINT: /stream
+        MPEG_STREAM_ENDPOINT: /backup_stream
+        SOCKET_IO_PROTOCOL: wss # WSS,WS,HTTPS,HTTP
+        WEB_PROTOCOL: https
+        PORT: 4000
+        ICECAST_PASSWORD: password
+    container_name: caster
+    restart: always
+    ports:
+      - 4000:4000
+    volumes:
+      - ./casting/playlist.txt:/etc/ices2/playlist.txt
+      - ./casting/songs:/etc/ices2/songs
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### NGINX reverse proxy config
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```
+server {
+        listen        443 ssl http2;
+        server_name   phonk.live;
 
-### `npm test`
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+        proxy_set_header Sec-WebSocket-Extensions $http_sec_websocket_extensions;
+        proxy_set_header Sec-WebSocket-Key $http_sec_websocket_key;
+        proxy_set_header Sec-WebSocket-Version $http_sec_websocket_version;
 
-### `npm run build`
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+        proxy_max_temp_file_size 0;
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+        location /socket/ {
+                resolver 127.0.0.11 valid=30s;
+                set $upstream_url caster;
+                proxy_pass http://$upstream_url:4000;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+        }
+        location / {
+                resolver 127.0.0.11 valid=30s;
+                set $upstream_url caster;
+                proxy_pass http://$upstream_url:4000;
+        }
+}
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Things you should know:
 
-### `npm run eject`
+- songs within `/etc/ices2/songs` must be `.ogg`, and they should have metadata for artist/title
+- the MPEG stream is a backup, webkit devices (iOS/Mac OSX) doesn't support OGG for whatever reason, if you dont care about iOS devices you can edit `start.sh` and remove the FFMPEG relay
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Things I plan to do
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- build up some sort of config.json for the frontend, that way with just a few config changes you can spin up any type of radio station you want! Soon™

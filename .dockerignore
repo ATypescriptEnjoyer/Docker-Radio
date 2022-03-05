@@ -1,3 +1,5 @@
-node_modules
+**/node_modules
 .eslintrc
 .prettierrc
+./casting/playlist.txt
+./casting/songs
