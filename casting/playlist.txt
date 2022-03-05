@@ -1,3 +1,0 @@
-songs/1.ogg
-songs/2.ogg
-songs/3.ogg
