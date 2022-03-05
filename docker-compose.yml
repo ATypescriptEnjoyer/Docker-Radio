@@ -10,7 +10,7 @@ services:
         SOCKET_IO_PROTOCOL: wss # WSS,WS,HTTPS,HTTP
         WEB_PROTOCOL: https
         PORT: 4000
-        ICECAST_PASSWORD: password
+        ICECAST_PASSWORD: password #As long as you dont forward port 8000 this does not need to be secure as its not exposed
     container_name: caster
     restart: always
     ports:
