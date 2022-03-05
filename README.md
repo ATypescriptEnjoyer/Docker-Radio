@@ -69,6 +69,21 @@ server {
 }
 ```
 
+### Converting MP3s to Vorbis OGG
+
+```
+  for f in **/*.mp3; do
+    song_name="$(basename "$f")";
+    ffmpeg -vn -i "$f" -c:a libvorbis -q:a 4 "songs/${song_name/%mp3/ogg}";
+  done
+```
+
+### Creating playlist.txt from songs
+
+```
+  find songs/ > playlist.txt
+```
+
 ## Things you should know:
 
 - songs within `/etc/ices2/songs` must be `.ogg`, and they should have metadata for artist/title
