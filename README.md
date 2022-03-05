@@ -23,7 +23,7 @@ services:
     container_name: caster
     restart: always
     ports:
-      - 4000:4000
+      - 4000:4000 #Feel free to remove exposing any ports if you go the nginx reverse proxy route
     volumes:
       - ./casting/playlist.txt:/etc/ices2/playlist.txt
       - ./casting/songs:/etc/ices2/songs
