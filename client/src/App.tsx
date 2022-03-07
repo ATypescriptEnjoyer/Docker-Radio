@@ -22,7 +22,7 @@ import { io } from 'socket.io-client';
 export const App = (): JSX.Element => {
   const [playing, setPlaying] = useState<boolean>(false);
   const [streamUrl, setStreamUrl] = useState<string>(process.env.REACT_APP_STREAM_URL || '');
-  const [volume, setVolume] = useState<number>(0.15);
+  const [volume, setVolume] = useState<number>(parseInt(localStorage.getItem('volume') || '0.15'));
   const playerRef = useRef<HTMLAudioElement>(null);
   const [listeners, setListeners] = useState(0);
   const [currentlyPlaying, setCurrentlyPlaying] = useState({
@@ -88,6 +88,7 @@ export const App = (): JSX.Element => {
   };
 
   const handleVolumeChanged = (newVolume: number): void => {
+    localStorage.setItem('volume', newVolume.toString());
     setVolume(newVolume);
     if (playerRef.current) {
       playerRef.current.volume = newVolume;
