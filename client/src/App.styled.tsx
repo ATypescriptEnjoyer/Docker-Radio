@@ -94,7 +94,9 @@ export const MediaButton = styled.button`
 `;
 
 export const MediaInfoBox = styled.div`
-  height: 64px;
+  min-height: 64px;
+  height: auto;
+  padding: 16px;
   max-width: 800px;
   width: 100%;
   background-color: #1d1f2b;
@@ -105,8 +107,6 @@ export const MediaInfoBox = styled.div`
 
   @media (max-width: 600px) {
     flex-direction: column;
-    height: auto;
-    padding: 16px;
     grid-column: span 2;
   }
 `;
