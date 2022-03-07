@@ -178,11 +178,18 @@ export const Listeners = styled.span`
   font-size: 16px;
   grid-column-start: 2;
   grid-row-start: 2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
 
   @media (max-width: 600px) {
     height: 100%;
-    display: flex;
-    align-items: center;
     justify-content: center;
     background-color: #1d1f2b;
   }

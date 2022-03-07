@@ -16,7 +16,13 @@ import {
   Listeners,
   TextContainer,
 } from './App.styled';
-import { PlayArrowOutlined, PauseOutlined, VolumeDownOutlined, VolumeOffOutlined } from '@mui/icons-material';
+import {
+  PlayArrowOutlined,
+  PauseOutlined,
+  VolumeDownOutlined,
+  VolumeOffOutlined,
+  HeadphonesOutlined,
+} from '@mui/icons-material';
 import { io } from 'socket.io-client';
 
 export const App = (): JSX.Element => {
@@ -49,6 +55,7 @@ export const App = (): JSX.Element => {
       setListeners(data);
     });
     socket.on('TRACK_CHANGED', ({ artist, title }: { artist: string; title: string }) => {
+      if (artist === '' || title === '') return; //dont set empty tracks
       setCurrentlyPlaying({
         artist,
         title,
@@ -124,7 +131,10 @@ export const App = (): JSX.Element => {
               />
             </VolumeBox>
           </MediaInfoBox>
-          <Listeners>{listeners} listening right now</Listeners>
+          <Listeners>
+            <HeadphonesOutlined />
+            {listeners}
+          </Listeners>
         </MediaContainer>
       </Container>
     </AppComponent>
