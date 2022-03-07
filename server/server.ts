@@ -24,10 +24,13 @@ let currentMetadata = { artist: "", title: "" };
 const checkMetadata = () => {
   request(metadataUrl, { json: true }, (err, resp, body) => {
     if (err) return;
-    const metadata: { artist: string; title: string } =
-      body.icestats.source.find(
-        (source: { listenurl: string }) => source.listenurl === sourceOggUrl
-      );
+    let sources = body.icestats.source;
+    if (!Array.isArray(sources)) {
+      sources = [sources];
+    }
+    const metadata: { artist: string; title: string } = sources.find(
+      (source: { listenurl: string }) => source.listenurl === sourceOggUrl
+    );
     if (!metadata) {
       return;
     }
