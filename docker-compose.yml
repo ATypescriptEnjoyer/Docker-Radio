@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   caster:
-    build: 
+    build:
       dockerfile: Dockerfile
       args:
         #Global args
@@ -11,21 +11,21 @@ services:
         #API/Services Args
         PORT: 4000
         ICECAST_PASSWORD: password #As long as you dont forward port 8000 this does not need to be secure as its not exposed
-        
+
         #Frontend Build Args
-        WEB_PAGE_TITLE: Phonk Live - 24/7 Phonk Radio
-        WEB_HEADER: Phonk.Live
-        WEB_SUBTITLE: 24/7 Phonk Radio
+        WEB_PAGE_TITLE: My Radio Station - 24/7 Radio!
+        WEB_HEADER: My Radio Station
+        WEB_SUBTITLE: 24/7 Fun Radio Station!
         WEB_BACKGROUND_COLOUR: "#1D1F2B"
         WEB_ACCENT_COLOUR: "#32CD32"
         SOCKET_IO_PROTOCOL: wss # WSS,WS,HTTPS,HTTP
-        DOMAIN: phonk.live
+        DOMAIN: myradiostation.live
         WEB_PROTOCOL: https
-                
+
     container_name: caster
     restart: always
     ports:
-      - 4000:4000
+      - 4000:4000 #If you're using the reverse proxy, you don't need to expose any ports
     volumes:
       - ./casting/playlist.txt:/etc/ices2/playlist.txt
       - ./casting/songs:/etc/ices2/songs

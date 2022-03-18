@@ -4,7 +4,7 @@
 
 ## Setup:
 
-### docker-compose.yml
+### Example docker-compose.yml
 
 ```
 version: '3.7'
@@ -13,17 +13,28 @@ services:
     build:
       dockerfile: Dockerfile
       args:
-        DOMAIN: phonk.live
+        #Global args
         OGG_STREAM_ENDPOINT: /stream
         MPEG_STREAM_ENDPOINT: /backup_stream
-        SOCKET_IO_PROTOCOL: wss # WSS,WS,HTTPS,HTTP
-        WEB_PROTOCOL: https
+
+        #API/Services Args
         PORT: 4000
-        ICECAST_PASSWORD: password
+        ICECAST_PASSWORD: password #As long as you dont forward port 8000 this does not need to be secure as its not exposed
+
+        #Frontend Build Args
+        WEB_PAGE_TITLE: My Radio Station - 24/7 Radio!
+        WEB_HEADER: My Radio Station
+        WEB_SUBTITLE: 24/7 Fun Radio Station!
+        WEB_BACKGROUND_COLOUR: "#1D1F2B"
+        WEB_ACCENT_COLOUR: "#32CD32"
+        SOCKET_IO_PROTOCOL: wss # WSS,WS,HTTPS,HTTP
+        DOMAIN: myradiostation.live
+        WEB_PROTOCOL: https
+
     container_name: caster
     restart: always
     ports:
-      - 4000:4000 #Feel free to remove exposing any ports if you go the nginx reverse proxy route
+      - 4000:4000 #If you're using the reverse proxy, you don't need to expose any ports
     volumes:
       - ./casting/playlist.txt:/etc/ices2/playlist.txt
       - ./casting/songs:/etc/ices2/songs
@@ -34,7 +45,7 @@ services:
 ```
 server {
         listen        443 ssl http2;
-        server_name   phonk.live;
+        server_name   myradiostation.live; #REPLACE THIS WITH YOUR RADIO STATION DOMAIN!
 
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -89,7 +100,3 @@ server {
 - songs within `/etc/ices2/songs` must be `.ogg`, and they should have metadata for artist/title
 - the MPEG stream is a backup, webkit devices (iOS/Mac OSX) doesn't support OGG for whatever reason, if you dont care about iOS devices you can edit `start.sh` and remove the FFMPEG relay
 - with the example `docker-compose.yml` the icecast admin panel isnt exposed, therefore the ICECAST_PASSWORD does not need to be secure. You probably don't even need one, but it doesn't hurt to have
-
-## Things I plan to do
-
-- build up some sort of config.json for the frontend, that way with just a few config changes you can spin up any type of radio station you want! Soon™
