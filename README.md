@@ -1,6 +1,8 @@
-# Phonk.live
+# Docker Radio
 
 ### 24/7 Radio Station, all contained within a docker container!
+
+## [See it in action! - https://phonk.live](https://phonk.live)
 
 ## Setup:
 
