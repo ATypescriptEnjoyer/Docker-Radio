@@ -3,6 +3,9 @@ import React from 'react';
 import { Slider } from '@mui/material';
 import styled from 'styled-components';
 
+const bgColour = process.env.REACT_APP_WEB_BACKGROUND_COLOUR;
+const accentColour = process.env.REACT_APP_WEB_ACCENT_COLOUR;
+
 export const App = styled.div`
   width: 100vw;
   height: 100vh;
@@ -65,7 +68,7 @@ export const Subtitle = styled.h2`
 export const MediaButton = styled.button`
   width: 64px;
   height: 64px;
-  background-color: #1d1f2b;
+  background-color: ${bgColour};
   border: 0;
   display: flex;
   align-items: center;
@@ -78,7 +81,7 @@ export const MediaButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    color: #32cd32;
+    color: ${accentColour};
   }
 
   &:active {
@@ -100,7 +103,7 @@ export const MediaInfoBox = styled.div`
   padding: 16px;
   max-width: 800px;
   width: 100%;
-  background-color: #1d1f2b;
+  background-color: ${bgColour};
   display: flex;
   padding-left: 16px;
   box-sizing: border-box;
@@ -130,7 +133,7 @@ export const SongDetails = styled.div`
 
 export const SongTitle = styled.p`
   font-size: 20px;
-  color: #32cd32;
+  color: ${accentColour};
   margin: 0;
   padding: 0;
   text-transform: uppercase;
@@ -162,7 +165,7 @@ export const VolumeSlider = styled(Slider)`
   max-width: 150px;
 
   && {
-    color: #32cd32;
+    color: ${accentColour};
 
     span:first-child {
       color: white;
@@ -175,7 +178,7 @@ export const VolumeSlider = styled(Slider)`
 `;
 
 export const Listeners = styled.span`
-  color: #32cd32;
+  color: ${accentColour};
   font-size: 16px;
   grid-column-start: 2;
   grid-row-start: 2;
@@ -192,6 +195,6 @@ export const Listeners = styled.span`
   @media (max-width: 600px) {
     height: 100%;
     justify-content: center;
-    background-color: #1d1f2b;
+    background-color: ${bgColour};
   }
 `;

@@ -64,10 +64,10 @@ export const App = (): JSX.Element => {
         navigator.mediaSession.metadata = new MediaMetadata({
           artist,
           title,
-          album: 'phonk.live',
+          album: process.env.REACT_APP_WEB_HEADER,
           artwork: [
             {
-              src: 'https://phonk.live/artwork.png',
+              src: '/artwork.png',
               type: 'image/png',
               sizes: '236x236',
             },
@@ -108,8 +108,8 @@ export const App = (): JSX.Element => {
       <Background autoPlay muted loop src="bg.mp4" />
       <Container>
         <TextContainer>
-          <Title>Phonk.Live</Title>
-          <Subtitle>24/7 Phonk Radio</Subtitle>
+          <Title>{process.env.REACT_APP_WEB_HEADER}</Title>
+          <Subtitle>{process.env.REACT_APP_WEB_SUBTITLE}</Subtitle>
         </TextContainer>
         <MediaContainer>
           <MediaButton onClick={handleMediaButtonClick}>
