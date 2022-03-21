@@ -47,6 +47,15 @@ export const App = (): JSX.Element => {
   }, [playerRef]);
 
   useEffect(() => {
+    setInterval(() => {
+      setCurrentlyPlaying({
+        artist: 'Random Artist ???',
+        title: 'Random Title ???',
+      });
+    }, 10000);
+  }, []);
+
+  useEffect(() => {
     const socket = io(process.env.REACT_APP_SOCKET_IO_CONNECTION || '', {
       reconnectionDelayMax: 10000,
       path: '/socket',
@@ -117,8 +126,8 @@ export const App = (): JSX.Element => {
           </MediaButton>
           <MediaInfoBox>
             <SongDetails>
-              <SongTitle>{currentlyPlaying.title}</SongTitle>
-              <SongArtist>{currentlyPlaying.artist}</SongArtist>
+              <SongTitle replaceSpeed={50}>{currentlyPlaying.title}</SongTitle>
+              <SongArtist replaceSpeed={50}>{currentlyPlaying.artist}</SongArtist>
             </SongDetails>
             <VolumeBox>
               {volume === 0 ? <VolumeOffOutlined /> : <VolumeDownOutlined />}

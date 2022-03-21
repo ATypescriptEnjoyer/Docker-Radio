@@ -2,6 +2,7 @@
 import React from 'react';
 import { Slider } from '@mui/material';
 import styled from 'styled-components';
+import { Typed } from './components';
 
 const bgColour = process.env.REACT_APP_WEB_BACKGROUND_COLOUR;
 const accentColour = process.env.REACT_APP_WEB_ACCENT_COLOUR;
@@ -66,8 +67,9 @@ export const Subtitle = styled.h2`
 `;
 
 export const MediaButton = styled.button`
-  width: 64px;
-  height: 64px;
+  aspect-ratio: 1/1;
+  min-width: 64px;
+  height: 100%;
   background-color: ${bgColour};
   border: 0;
   display: flex;
@@ -131,20 +133,22 @@ export const SongDetails = styled.div`
   flex: 1;
 `;
 
-export const SongTitle = styled.p`
+export const SongTitle = styled(Typed)`
   font-size: 20px;
   color: ${accentColour};
   margin: 0;
   padding: 0;
   text-transform: uppercase;
+  flex: 1;
 `;
 
-export const SongArtist = styled.p`
+export const SongArtist = styled(Typed)`
   font-size: 20px;
   color: white;
   margin: 0;
   padding: 0;
   text-transform: uppercase;
+  flex: 1;
 `;
 
 export const VolumeBox = styled.div`
