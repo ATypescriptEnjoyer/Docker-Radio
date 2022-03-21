@@ -47,15 +47,6 @@ export const App = (): JSX.Element => {
   }, [playerRef]);
 
   useEffect(() => {
-    setInterval(() => {
-      setCurrentlyPlaying({
-        artist: 'Random Artist ???',
-        title: 'Random Title ???',
-      });
-    }, 10000);
-  }, []);
-
-  useEffect(() => {
     const socket = io(process.env.REACT_APP_SOCKET_IO_CONNECTION || '', {
       reconnectionDelayMax: 10000,
       path: '/socket',
