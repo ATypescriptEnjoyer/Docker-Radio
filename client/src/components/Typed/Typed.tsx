@@ -10,6 +10,7 @@ const Typed = (props: Props): JSX.Element => {
   const [text, setText] = useState('');
 
   useEffect(() => {
+    if (text === props.children) return;
     setTextToEmpty().then(() => setTextToNew(props.children));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -21,7 +22,6 @@ const Typed = (props: Props): JSX.Element => {
         let decrement = text.length;
         const interval = setInterval(() => {
           if (decrement === 0) {
-            console.log('Cleared');
             clearInterval(interval);
             resolve();
           }
@@ -42,7 +42,6 @@ const Typed = (props: Props): JSX.Element => {
           setText(newText.slice(0, increment + 1));
           increment++;
           if (increment - 1 === newText.length) {
-            console.log('Built');
             clearInterval(interval);
             resolve();
           }
