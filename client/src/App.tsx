@@ -32,8 +32,8 @@ export const App = (): JSX.Element => {
   const playerRef = useRef<HTMLAudioElement>(null);
   const [listeners, setListeners] = useState(0);
   const [currentlyPlaying, setCurrentlyPlaying] = useState({
-    artist: 'Loading Artist...',
-    title: 'Loading Title...',
+    artist: '',
+    title: '',
   });
 
   useEffect(() => {
