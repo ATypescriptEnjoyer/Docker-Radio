@@ -96,6 +96,7 @@ export const MediaButton = styled.button`
 
   @media (max-width: 600px) {
     grid-row-start: 2;
+    height: 64px;
   }
 `;
 

@@ -35,12 +35,12 @@ const checkMetadata = () => {
       return;
     }
     if (
-      metadata.artist !== currentMetadata.artist ||
-      metadata.title !== currentMetadata.title
+      metadata.artist.toString() !== currentMetadata.artist ||
+      metadata.title.toString() !== currentMetadata.title
     ) {
       currentMetadata = {
-        artist: metadata.artist,
-        title: metadata.title,
+        artist: metadata.artist.toString(),
+        title: metadata.title.toString(),
       };
       io.emit("TRACK_CHANGED", currentMetadata);
     }
