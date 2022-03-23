@@ -29,7 +29,7 @@ RUN yarn install
 
 RUN yarn build
 
-FROM ubuntu:latest
+FROM ubuntu:latest as server
 
 ARG PORT=4000
 ARG OGG_STREAM_ENDPOINT=/stream
