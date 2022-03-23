@@ -59,8 +59,6 @@ RUN sed -i "s/hackme/$ICECAST_PASSWORD/g" /etc/ices2/ices-playlist.xml
 
 COPY server /app
 COPY --from=client /app/build /app/build
-COPY start.sh .
-RUN chmod +x start.sh
 
 WORKDIR /app
 
@@ -68,6 +66,4 @@ RUN yarn install
 
 EXPOSE ${PORT}
 
-WORKDIR /
-
-CMD ["/start.sh"]
+ENTRYPOINT [ "yarn", "start" ]

@@ -3,6 +3,10 @@ import express from "express";
 import http from "http";
 import request from "request";
 import { Server } from "socket.io";
+import util from "util";
+import { exec } from "child_process";
+
+const execAsync = util.promisify(exec);
 
 const app = express();
 const server = http.createServer(app);
@@ -20,6 +24,20 @@ const metadataUrl = `${icecastUrl}${metadataEndpoint}`;
 let connectedUsers = 0;
 let metadataCheckInterval: NodeJS.Timeout | null = null;
 let currentMetadata = { artist: "", title: "" };
+
+const startService = async (
+  serviceName: string,
+  command: string,
+  workingDir = ""
+): Promise<void> => {
+  const processLog = (logText: string) => {
+    console.log(`${serviceName}: ${logText}`);
+  };
+  console.log(`Starting ${serviceName}`);
+  const exec = await execAsync(command, { cwd: workingDir });
+  exec.stdout && processLog(exec.stdout);
+  exec.stderr && processLog(exec.stderr);
+};
 
 const checkMetadata = () => {
   request(metadataUrl, { json: true }, (err, resp, body) => {
@@ -79,3 +97,17 @@ app.get(mpegStream, (req, res) =>
 );
 
 server.listen(PORT);
+
+const ffmpegCommand = `
+  ffmpeg -re -i http://localhost:8000${oggStream} -vn \
+  -codec:a libmp3lame -b:a 64k -f mp3 \
+  -content_type audio/mpeg \
+  icecast://source:${process.env.ICECAST_PASSWORD}@localhost:8000${mpegStream}
+`;
+
+startService("Icecast2", "/etc/init.d/icecast2 start", "/etc/ices2").then(
+  () => {
+    startService("Ices2", "ices2 /etc/ices2/ices-playlist.xml", "/etc/ices2");
+    startService("MPEG Relay", ffmpegCommand);
+  }
+);
