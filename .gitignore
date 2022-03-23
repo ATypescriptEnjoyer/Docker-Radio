@@ -4,11 +4,12 @@ build
 *.ogg
 *.mp4
 
-icecast.xml
-ices-playlist.xml
 playlist.txt
 
 .env
 
 manifest.json
-artwork*
+*.png
+favicon.ico
+*.svg
+*.xml
