@@ -99,10 +99,10 @@ app.get(mpegStream, (req, res) =>
 server.listen(PORT);
 
 const ffmpegCommand = `
-  ffmpeg -re -i http://localhost:8000${oggStream} -vn \
+  ffmpeg -re -i ${sourceOggUrl} -vn \
   -codec:a libmp3lame -b:a 64k -f mp3 \
   -content_type audio/mpeg \
-  icecast://source:${process.env.ICECAST_PASSWORD}@localhost:8000${mpegStream}
+  icecast://source:${process.env.ICECAST_PASSWORD}@${sourceMpegUrl}
 `;
 
 startService("Icecast2", "/etc/init.d/icecast2 start", "/etc/ices2").then(
