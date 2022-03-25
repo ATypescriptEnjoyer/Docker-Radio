@@ -102,7 +102,10 @@ const ffmpegCommand = `
   ffmpeg -re -i ${sourceOggUrl} -vn \
   -codec:a libmp3lame -b:a 64k -f mp3 \
   -content_type audio/mpeg \
-  icecast://source:${process.env.ICECAST_PASSWORD}@${sourceMpegUrl}
+  icecast://source:${process.env.ICECAST_PASSWORD}@${sourceMpegUrl.replace(
+  "http://",
+  ""
+)}
 `;
 
 startService("Icecast2", "/etc/init.d/icecast2 start", "/etc/ices2").then(
