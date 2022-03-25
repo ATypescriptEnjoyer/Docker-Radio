@@ -47,7 +47,7 @@ const checkMetadata = () => {
       sources = [sources];
     }
     const metadata: { artist: string; title: string } = sources.find(
-      (source: { listenurl: string }) => source.listenurl === sourceOggUrl
+      (source: { listenurl: string }) => source?.listenurl === sourceOggUrl
     );
     if (!metadata) {
       return;
