@@ -42,26 +42,30 @@ const startService = async (
 
 const checkMetadata = () => {
   request(metadataUrl, { json: true }, (err, resp, body) => {
-    if (err) return;
-    let sources = body.icestats.source;
-    if (!Array.isArray(sources)) {
-      sources = [sources];
-    }
-    const metadata: { artist: string; title: string } = sources.find(
-      (source: { listenurl: string }) => source?.listenurl === sourceOggUrl
-    );
-    if (!metadata) {
-      return;
-    }
-    if (
-      metadata.artist.toString() !== currentMetadata.artist ||
-      metadata.title.toString() !== currentMetadata.title
-    ) {
-      currentMetadata = {
-        artist: metadata.artist.toString(),
-        title: metadata.title.toString(),
-      };
-      io.emit("TRACK_CHANGED", currentMetadata);
+    try {
+      let sources = body?.icestats?.source;
+      if (err || !sources) return;
+      if (!Array.isArray(sources)) {
+        sources = [sources];
+      }
+      const metadata: { artist: string; title: string } = sources.find(
+        (source: { listenurl: string }) => source?.listenurl === sourceOggUrl
+      );
+      if (!metadata) {
+        return;
+      }
+      if (
+        metadata.artist.toString() !== currentMetadata.artist ||
+        metadata.title.toString() !== currentMetadata.title
+      ) {
+        currentMetadata = {
+          artist: metadata.artist.toString(),
+          title: metadata.title.toString(),
+        };
+        io.emit("TRACK_CHANGED", currentMetadata);
+      }
+    } catch (error) {
+      console.log(`Error:: ${JSON.stringify(body)}`);
     }
   });
 };
@@ -106,6 +110,12 @@ app.get(oggStream, (req, res) => req.pipe(request.get(sourceOggUrl)).pipe(res));
 app.get(mpegStream, (req, res) =>
   req.pipe(request.get(sourceMpegUrl)).pipe(res)
 );
+
+app.get("/trackcount", async (req, res) => {
+  const { stdout } = await execAsync("wc -l < /etc/ices2/playlist.txt");
+  const count = parseInt(stdout.trim()) || 0;
+  res.send((count + 1).toString()); // +1 because last song doesnt get added to wc -l command
+});
 
 server.listen(PORT);
 

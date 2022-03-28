@@ -3,3 +3,4 @@
 .prettierrc
 ./casting/playlist.txt
 ./casting/songs
+**/.env

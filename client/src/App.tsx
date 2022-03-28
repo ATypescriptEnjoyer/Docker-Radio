@@ -17,6 +17,7 @@ import {
   Spacer,
   TextContainer,
   GetInTouch,
+  DataChild,
 } from './App.styled';
 import {
   PlayArrowOutlined,
@@ -24,11 +25,14 @@ import {
   VolumeDownOutlined,
   VolumeOffOutlined,
   HeadphonesOutlined,
+  LibraryMusicOutlined,
 } from '@mui/icons-material';
 import { io, Socket } from 'socket.io-client';
+import axios from 'axios';
 
 export const App = (): JSX.Element => {
   const [socket, setSocket] = useState<Socket>();
+  const [tracks, setTracks] = useState(0);
   const [playing, setPlaying] = useState<boolean>(false);
   const [streamUrl, setStreamUrl] = useState<string>(process.env.REACT_APP_STREAM_URL || '');
   const [volume, setVolume] = useState<number>(parseFloat(localStorage.getItem('volume') || '0.15'));
@@ -48,6 +52,15 @@ export const App = (): JSX.Element => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playerRef]);
+
+  useEffect(() => {
+    const getTrackCount = async (): Promise<void> => {
+      const url = `${process.env.REACT_APP_API_URL}/trackcount`;
+      const { data } = await axios.get<number>(url);
+      setTracks(data);
+    };
+    getTrackCount();
+  }, []);
 
   useEffect(() => {
     const socket = io(process.env.REACT_APP_SOCKET_IO_CONNECTION || '', {
@@ -140,7 +153,18 @@ export const App = (): JSX.Element => {
             </VolumeBox>
           </MediaInfoBox>
           <DataContainer>
-            <HeadphonesOutlined /> {listeners} <Spacer>/ /</Spacer> {process.env.REACT_APP_VERSION}
+            <DataChild flex={0.5} title={`${listeners} listening now!`}>
+              <HeadphonesOutlined /> {listeners}
+            </DataChild>
+            <Spacer>/ /</Spacer>
+            <DataChild title={`${tracks} loaded!`}>
+              <LibraryMusicOutlined />
+              {tracks}
+            </DataChild>
+            <Spacer>/ /</Spacer>
+            <DataChild flex={0.5} title={`Version ${process.env.REACT_APP_VERSION}`}>
+              {process.env.REACT_APP_VERSION}
+            </DataChild>
           </DataContainer>
         </MediaContainer>
       </Container>

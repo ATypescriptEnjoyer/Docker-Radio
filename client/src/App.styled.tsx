@@ -202,7 +202,8 @@ export const DataContainer = styled.div`
   @media (max-width: 600px) {
     height: 100%;
     background-color: ${bgColour};
-    justify-content: center;
+    justify-content: space-evenly;
+    gap: 0px;
   }
 `;
 
@@ -211,8 +212,23 @@ export const GetInTouch = styled.div`
   bottom: 16px;
   right: 16px;
   color: white;
+
+  @media (max-width: 600px) {
+    left: 16px;
+    bottom: 40px;
+  }
 `;
 
 export const Spacer = styled.span`
   margin: 0 8px;
+`;
+
+export const DataChild = styled.div<{ flex?: number }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  @media (max-width: 600px) {
+    flex: ${(props): number => props.flex || 1};
+  }
 `;
