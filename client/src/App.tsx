@@ -157,7 +157,7 @@ export const App = (): JSX.Element => {
               <HeadphonesOutlined /> {listeners}
             </DataChild>
             <Spacer>/ /</Spacer>
-            <DataChild title={`${tracks} loaded!`}>
+            <DataChild title={`${tracks} tracks loaded!`}>
               <LibraryMusicOutlined />
               {tracks}
             </DataChild>
