@@ -189,9 +189,7 @@ export const DataContainer = styled.div`
   grid-row-start: 2;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   max-width: 800px;
-  padding: 0 16px;
   box-sizing: border-box;
   gap: 4px;
   user-select: none;
@@ -203,15 +201,9 @@ export const DataContainer = styled.div`
 
   @media (max-width: 600px) {
     height: 100%;
-    justify-content: space-between;
     background-color: ${bgColour};
+    justify-content: center;
   }
-`;
-
-export const DataContainerChild = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
 `;
 
 export const GetInTouch = styled.div`
@@ -219,4 +211,8 @@ export const GetInTouch = styled.div`
   bottom: 16px;
   right: 16px;
   color: white;
+`;
+
+export const Spacer = styled.span`
+  margin: 0 8px;
 `;

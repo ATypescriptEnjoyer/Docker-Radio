@@ -14,7 +14,7 @@ import {
   VolumeBox,
   Subtitle,
   DataContainer,
-  DataContainerChild,
+  Spacer,
   TextContainer,
   GetInTouch,
 } from './App.styled';
@@ -140,11 +140,7 @@ export const App = (): JSX.Element => {
             </VolumeBox>
           </MediaInfoBox>
           <DataContainer>
-            <DataContainerChild>
-              <HeadphonesOutlined />
-              {listeners}
-            </DataContainerChild>
-            <DataContainerChild>{process.env.REACT_APP_VERSION}</DataContainerChild>
+            <HeadphonesOutlined /> {listeners} <Spacer>/ /</Spacer> {process.env.REACT_APP_VERSION}
           </DataContainer>
         </MediaContainer>
       </Container>
