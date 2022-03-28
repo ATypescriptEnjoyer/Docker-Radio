@@ -81,12 +81,12 @@ io.on("connection", (socket) => {
   socket.on("LISTEN_STATE_CHANGED", (value) => {
     listening = value;
     if (listening) listeningUsers++;
-    else listeningUsers--;
+    else if (listeningUsers > 0) listeningUsers--;
     io.emit("LISTENER_COUNT", listeningUsers);
   });
   socket.once("disconnect", () => {
     connectedUsers--;
-    if (listening) {
+    if (listening && listeningUsers > 0) {
       listeningUsers--;
     }
     if (connectedUsers > 0) {
