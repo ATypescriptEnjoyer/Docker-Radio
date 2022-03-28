@@ -22,6 +22,7 @@ const sourceMpegUrl = `${icecastUrl}${mpegStream}`;
 const metadataUrl = `${icecastUrl}${metadataEndpoint}`;
 
 let connectedUsers = 0;
+let listeningUsers = 0;
 let metadataCheckInterval: NodeJS.Timeout | null = null;
 let currentMetadata = { artist: "", title: "" };
 
@@ -70,16 +71,26 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
+  let listening = false;
   connectedUsers++;
   if (!metadataCheckInterval) {
     metadataCheckInterval = setInterval(checkMetadata, 1000);
   }
   socket.emit("TRACK_CHANGED", currentMetadata);
-  io.emit("LISTENER_COUNT", connectedUsers);
+  socket.emit("LISTENER_COUNT", listeningUsers);
+  socket.on("LISTEN_STATE_CHANGED", (value) => {
+    listening = value;
+    if (listening) listeningUsers++;
+    else listeningUsers--;
+    io.emit("LISTENER_COUNT", listeningUsers);
+  });
   socket.once("disconnect", () => {
     connectedUsers--;
+    if (listening) {
+      listeningUsers--;
+    }
     if (connectedUsers > 0) {
-      io.emit("LISTENER_COUNT", connectedUsers);
+      io.emit("LISTENER_COUNT", listeningUsers);
     } else {
       clearInterval(metadataCheckInterval);
       metadataCheckInterval = null;

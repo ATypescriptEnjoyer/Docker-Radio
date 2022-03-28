@@ -23,9 +23,10 @@ import {
   VolumeOffOutlined,
   HeadphonesOutlined,
 } from '@mui/icons-material';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 
 export const App = (): JSX.Element => {
+  const [socket, setSocket] = useState<Socket>();
   const [playing, setPlaying] = useState<boolean>(false);
   const [streamUrl, setStreamUrl] = useState<string>(process.env.REACT_APP_STREAM_URL || '');
   const [volume, setVolume] = useState<number>(parseFloat(localStorage.getItem('volume') || '0.15'));
@@ -51,6 +52,7 @@ export const App = (): JSX.Element => {
       reconnectionDelayMax: 10000,
       path: '/socket',
     });
+    setSocket(socket);
     socket.on('LISTENER_COUNT', (data) => {
       setListeners(data);
     });
@@ -79,6 +81,7 @@ export const App = (): JSX.Element => {
       socket.off('LISTENER_COUNT');
       socket.off('TRACK_CHANGED');
       socket.disconnect();
+      setSocket(undefined);
     };
   }, []);
 
@@ -92,6 +95,9 @@ export const App = (): JSX.Element => {
       playerRef.current.play();
     }
     setPlaying(!playing);
+    if (socket) {
+      socket.emit('LISTEN_STATE_CHANGED', playing);
+    }
   };
 
   const handleVolumeChanged = (newVolume: number): void => {
