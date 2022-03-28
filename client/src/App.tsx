@@ -94,10 +94,10 @@ export const App = (): JSX.Element => {
       playerRef.current.src = streamUrl;
       playerRef.current.play();
     }
-    setPlaying(!playing);
     if (socket) {
-      socket.emit('LISTEN_STATE_CHANGED', playing);
+      socket.emit('LISTEN_STATE_CHANGED', !playing);
     }
+    setPlaying(!playing);
   };
 
   const handleVolumeChanged = (newVolume: number): void => {
