@@ -104,13 +104,13 @@ export const MediaInfoBox = styled.div`
   min-height: 64px;
   height: auto;
   padding: 16px;
-  max-width: 800px;
   width: 100%;
   background-color: ${bgColour};
   display: flex;
   padding-left: 16px;
   box-sizing: border-box;
   grid-column-start: 2;
+  max-width: 800px;
 
   @media (max-width: 600px) {
     flex-direction: column;
@@ -182,13 +182,17 @@ export const VolumeSlider = styled(Slider)`
   }
 `;
 
-export const Listeners = styled.span`
+export const DataContainer = styled.div`
   color: ${accentColour};
   font-size: 16px;
   grid-column-start: 2;
   grid-row-start: 2;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  max-width: 800px;
+  padding: 0 16px;
+  box-sizing: border-box;
   gap: 4px;
   user-select: none;
 
@@ -199,7 +203,20 @@ export const Listeners = styled.span`
 
   @media (max-width: 600px) {
     height: 100%;
-    justify-content: center;
+    justify-content: space-between;
     background-color: ${bgColour};
   }
+`;
+
+export const DataContainerChild = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
+
+export const GetInTouch = styled.div`
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  color: white;
 `;

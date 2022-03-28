@@ -13,8 +13,10 @@ import {
   VolumeSlider,
   VolumeBox,
   Subtitle,
-  Listeners,
+  DataContainer,
+  DataContainerChild,
   TextContainer,
+  GetInTouch,
 } from './App.styled';
 import {
   PlayArrowOutlined,
@@ -137,12 +139,16 @@ export const App = (): JSX.Element => {
               />
             </VolumeBox>
           </MediaInfoBox>
-          <Listeners>
-            <HeadphonesOutlined />
-            {listeners}
-          </Listeners>
+          <DataContainer>
+            <DataContainerChild>
+              <HeadphonesOutlined />
+              {listeners}
+            </DataContainerChild>
+            <DataContainerChild>{process.env.REACT_APP_VERSION}</DataContainerChild>
+          </DataContainer>
         </MediaContainer>
       </Container>
+      {process.env.REACT_APP_CONTACT && <GetInTouch>{process.env.REACT_APP_CONTACT}</GetInTouch>}
     </AppComponent>
   );
 };

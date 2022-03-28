@@ -21,6 +21,7 @@ services:
         SOCKET_IO_PROTOCOL: wss # WSS,WS,HTTPS,HTTP
         DOMAIN: myradiostation.live
         WEB_PROTOCOL: https
+        REACT_APP_CONTACT: Get In Touch!
 
     container_name: caster
     restart: always
