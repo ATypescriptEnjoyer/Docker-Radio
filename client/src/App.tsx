@@ -75,9 +75,12 @@ export const App = (): JSX.Element => {
       if (!firstTimeConnected) {
         setFirstTimeConnected(true);
       } else {
-        //reconnect
-        if (playing && playerRef.current && playerRef.current.paused) {
-          playerRef.current.play(); //reconnect to audio stream automatically
+        //reconnect usually because of network change/disconnect
+        if (playing && playerRef.current) {
+          playerRef.current.src = '';
+          playerRef.current.src = streamUrl;
+          playerRef.current.play();
+          socket.emit('LISTEN_STATE_CHANGED', true);
         }
       }
     });
