@@ -153,7 +153,7 @@ export const App = (): JSX.Element => {
             </VolumeBox>
           </MediaInfoBox>
           <DataContainer>
-            <DataChild flex={0.5} title={`${listeners} listening now!`}>
+            <DataChild flex="initial" title={`${listeners} listening now!`}>
               <HeadphonesOutlined /> {listeners}
             </DataChild>
             <Spacer>/ /</Spacer>

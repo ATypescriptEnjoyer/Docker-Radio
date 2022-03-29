@@ -204,6 +204,7 @@ export const DataContainer = styled.div`
     background-color: ${bgColour};
     justify-content: space-evenly;
     gap: 0px;
+    padding: 0 16px;
   }
 `;
 
@@ -223,12 +224,12 @@ export const Spacer = styled.span`
   margin: 0 8px;
 `;
 
-export const DataChild = styled.div<{ flex?: number }>`
+export const DataChild = styled.div<{ flex?: string | number }>`
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 4px;
   @media (max-width: 600px) {
-    flex: ${(props): number => props.flex || 1};
+    flex: ${(props): string | number => props.flex || 1};
   }
 `;
