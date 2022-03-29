@@ -3,10 +3,10 @@ import express from "express";
 import http from "http";
 import request from "request";
 import { Server } from "socket.io";
-import util from "util";
-import { exec } from "child_process";
+import { promisify } from "util";
+import { spawn, exec } from "child_process";
 
-const execAsync = util.promisify(exec);
+const execAsync = promisify(exec);
 
 const app = express();
 const server = http.createServer(app);
@@ -26,18 +26,18 @@ let listeningUsers = 0;
 let metadataCheckInterval: NodeJS.Timeout | null = null;
 let currentMetadata = { artist: "", title: "" };
 
-const startService = async (
+const startService = (
   serviceName: string,
   command: string,
   workingDir = ""
-): Promise<void> => {
+): void => {
   const processLog = (logText: string) => {
     console.log(`${serviceName}: ${logText}`);
   };
   console.log(`Starting ${serviceName}`);
-  const exec = await execAsync(command, { cwd: workingDir });
-  exec.stdout && processLog(exec.stdout);
-  exec.stderr && processLog(exec.stderr);
+  const exec = spawn(command, { cwd: workingDir });
+  exec.stdout.on("data", (data) => processLog(data));
+  exec.stderr.on("data", (data) => processLog(data));
 };
 
 const checkMetadata = () => {
@@ -129,9 +129,6 @@ const ffmpegCommand = `
 )}
 `;
 
-startService("Icecast2", "/etc/init.d/icecast2 start", "/etc/ices2").then(
-  () => {
-    startService("Ices2", "ices2 /etc/ices2/ices-playlist.xml", "/etc/ices2");
-    startService("MPEG Relay", ffmpegCommand);
-  }
-);
+startService("Icecast2", "/etc/init.d/icecast2 start", "/etc/ices2");
+startService("Ices2", "ices2 /etc/ices2/ices-playlist.xml", "/etc/ices2");
+startService("MPEG Relay", ffmpegCommand);
