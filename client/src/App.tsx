@@ -32,7 +32,6 @@ import axios from 'axios';
 
 export const App = (): JSX.Element => {
   const [socket, setSocket] = useState<Socket>();
-  const [firstTimeConnected, setFirstTimeConnected] = useState(false);
   const [tracks, setTracks] = useState(0);
   const [playing, setPlaying] = useState<boolean>(false);
   const [streamUrl, setStreamUrl] = useState<string>(process.env.REACT_APP_STREAM_URL || '');
@@ -72,17 +71,7 @@ export const App = (): JSX.Element => {
     });
     setSocket(socket);
     socket.on('connect', () => {
-      if (!firstTimeConnected) {
-        setFirstTimeConnected(true);
-      } else {
-        //reconnect usually because of network change/disconnect
-        if (playing && playerRef.current) {
-          playerRef.current.src = '';
-          playerRef.current.src = streamUrl;
-          playerRef.current.play();
-          socket.emit('LISTEN_STATE_CHANGED', true);
-        }
-      }
+      socket.emit('LISTEN_STATE_CHANGED', playing);
     });
     socket.on('LISTENER_COUNT', (data) => {
       setListeners(data);
@@ -139,9 +128,17 @@ export const App = (): JSX.Element => {
     }
   };
 
+  const handleAudioError = (): void => {
+    if (playerRef.current && playing) {
+      playerRef.current.src = '';
+      playerRef.current.src = streamUrl;
+      playerRef.current.play();
+    }
+  };
+
   return (
     <AppComponent>
-      <audio ref={playerRef} />
+      <audio ref={playerRef} onError={handleAudioError} />
       <Background autoPlay muted loop src="bg.mp4" />
       <Container>
         <TextContainer>
