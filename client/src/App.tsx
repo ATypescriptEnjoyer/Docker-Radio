@@ -32,6 +32,7 @@ import axios from 'axios';
 
 export const App = (): JSX.Element => {
   const [socket, setSocket] = useState<Socket>();
+  const [firstTimeConnected, setFirstTimeConnected] = useState(false);
   const [tracks, setTracks] = useState(0);
   const [playing, setPlaying] = useState<boolean>(false);
   const [streamUrl, setStreamUrl] = useState<string>(process.env.REACT_APP_STREAM_URL || '');
@@ -65,9 +66,21 @@ export const App = (): JSX.Element => {
   useEffect(() => {
     const socket = io(process.env.REACT_APP_SOCKET_IO_CONNECTION || '', {
       reconnectionDelayMax: 10000,
+      reconnection: true,
+      reconnectionAttempts: 10,
       path: '/socket',
     });
     setSocket(socket);
+    socket.on('connect', () => {
+      if (!firstTimeConnected) {
+        setFirstTimeConnected(true);
+      } else {
+        //reconnect
+        if (playing && playerRef.current && playerRef.current.paused) {
+          playerRef.current.play(); //reconnect to audio stream automatically
+        }
+      }
+    });
     socket.on('LISTENER_COUNT', (data) => {
       setListeners(data);
     });
