@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import http from "http";
 import request from "request";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import { promisify } from "util";
 import { spawn, exec } from "child_process";
 
@@ -21,8 +21,7 @@ const sourceOggUrl = `${icecastUrl}${oggStream}`;
 const sourceMpegUrl = `${icecastUrl}${mpegStream}`;
 const metadataUrl = `${icecastUrl}${metadataEndpoint}`;
 
-let connectedUsers = 0;
-let listeningUsers = 0;
+let users = [];
 let metadataCheckInterval: NodeJS.Timeout | null = null;
 let currentMetadata = { artist: "", title: "" };
 
@@ -77,27 +76,39 @@ const io = new Server(server, {
   path: "/socket",
 });
 
+const announceListeners = (socket?: Socket) => {
+  if (socket) {
+    socket.emit(
+      "LISTENER_COUNT",
+      users.filter(({ listening }) => listening).length
+    );
+  } else {
+    io.emit(
+      "LISTENER_COUNT",
+      users.filter(({ listening }) => listening).length
+    );
+  }
+};
+
 io.on("connection", (socket) => {
-  let listening = false;
-  connectedUsers++;
+  users = [...users, { id: socket.id, listening: false }];
   if (!metadataCheckInterval) {
     metadataCheckInterval = setInterval(checkMetadata, 1000);
   }
   socket.emit("TRACK_CHANGED", currentMetadata);
-  socket.emit("LISTENER_COUNT", listeningUsers);
+  announceListeners(socket);
   socket.on("LISTEN_STATE_CHANGED", (value) => {
-    listening = value;
-    if (listening) listeningUsers++;
-    else if (listeningUsers > 0) listeningUsers--;
-    io.emit("LISTENER_COUNT", listeningUsers);
+    const user = users.find(({ id }) => id === socket.id);
+    if (user) {
+      user.listening = value;
+      users = [...users.filter(({ id }) => id !== socket.id), user];
+    }
+    announceListeners();
   });
   socket.once("disconnect", () => {
-    connectedUsers--;
-    if (listening && listeningUsers > 0) {
-      listeningUsers--;
-    }
-    if (connectedUsers > 0) {
-      io.emit("LISTENER_COUNT", listeningUsers);
+    users = users.filter(({ id }) => id !== socket.id);
+    if (users.length > 0) {
+      announceListeners();
     } else {
       clearInterval(metadataCheckInterval);
       metadataCheckInterval = null;
