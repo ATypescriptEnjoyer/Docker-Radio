@@ -153,5 +153,14 @@ const ffmpegArgs = [
 ];
 
 startService("Icecast2", "/etc/init.d/icecast2", ["start"], "/etc/ices2");
-startService("Ices2", "ices2", ["/etc/ices2/ices-playlist.xml"], "/etc/ices2");
-startService("MPEG Relay", "ffmpeg", ffmpegArgs);
+setTimeout(() => {
+  startService(
+    "Ices2",
+    "ices2",
+    ["/etc/ices2/ices-playlist.xml"],
+    "/etc/ices2"
+  );
+  setTimeout(() => {
+    startService("MPEG Relay", "ffmpeg", ffmpegArgs);
+  }, 5000);
+}, 5000);
