@@ -38,8 +38,13 @@ const startService = (
   const commandSplit = command.split(" ");
   const processName = commandSplit[0];
   const exec = spawn(processName, args, { cwd: workingDir });
-  exec.stdout.on("data", (data) => processLog(data));
-  exec.stderr.on("data", (data) => processLog(data));
+  exec.stdout.on("data", processLog);
+  exec.stderr.on("data", processLog);
+  exec.once("close", () => {
+    exec.stdout.off("data", processLog);
+    exec.stderr.off("data", processLog);
+    startService(serviceName, command, args, workingDir); //restart service
+  });
 };
 
 const checkMetadata = () => {
