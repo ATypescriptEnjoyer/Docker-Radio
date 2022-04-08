@@ -29,7 +29,8 @@ const startService = (
   serviceName: string,
   command: string,
   args: string[] = [],
-  workingDir = ""
+  workingDir = "",
+  restartOnClose = false
 ): void => {
   const processLog = (logText: string) => {
     console.log(`${serviceName}: ${logText}`);
@@ -40,11 +41,14 @@ const startService = (
   const exec = spawn(processName, args, { cwd: workingDir });
   exec.stdout.on("data", processLog);
   exec.stderr.on("data", processLog);
-  exec.once("close", () => {
-    exec.stdout.off("data", processLog);
-    exec.stderr.off("data", processLog);
-    startService(serviceName, command, args, workingDir); //restart service
-  });
+  if (restartOnClose) {
+    exec.once("close", () => {
+      exec.stdout.off("data", processLog);
+      exec.stderr.off("data", processLog);
+      startService(serviceName, command, args, workingDir, restartOnClose); //restart service
+    });
+  }
+
 };
 
 const checkMetadata = () => {
@@ -163,9 +167,10 @@ setTimeout(() => {
     "Ices2",
     "ices2",
     ["/etc/ices2/ices-playlist.xml"],
-    "/etc/ices2"
+    "/etc/ices2",
+    true
   );
   setTimeout(() => {
-    startService("MPEG Relay", "ffmpeg", ffmpegArgs);
+    startService("MPEG Relay", "ffmpeg", ffmpegArgs, "", true);
   }, 5000);
 }, 5000);
