@@ -12,13 +12,11 @@
 version: '3.7'
 services:
   caster:
-    build:
-      dockerfile: Dockerfile
+    image: ghcr.io/sasharyder/docker-radio
     environment:
-      #API/Services Args
-      ICECAST_PASSWORD: password #As long as you dont forward port 8000 this does not need to be secure as its not exposed
+      ICECAST_PASSWORD: password
     container_name: caster
-    restart: always
+    restart: unless-stopped
     ports:
       - 4000:4000 #If you're using the reverse proxy, you don't need to expose any ports
     volumes:
