@@ -1,47 +1,11 @@
 FROM node:16 as client
 
-ARG DOMAIN
-ARG OGG_STREAM_ENDPOINT
-ARG MPEG_STREAM_ENDPOINT
-ARG SOCKET_IO_PROTOCOL
-ARG WEB_PROTOCOL
-ARG WEB_PAGE_TITLE
-ARG WEB_HEADER
-ARG WEB_SUBTITLE
-ARG WEB_BACKGROUND_COLOUR
-ARG WEB_ACCENT_COLOUR
-ARG REACT_APP_CONTACT
-
-ARG REACT_APP_SOCKET_IO_CONNECTION=${SOCKET_IO_PROTOCOL}://${DOMAIN}/
-ARG REACT_APP_API_URL=${WEB_PROTOCOL}://${DOMAIN}
-ARG REACT_APP_STREAM_URL=${REACT_APP_API_URL}${OGG_STREAM_ENDPOINT}
-ARG REACT_APP_BACKUP_STREAM_URL=${REACT_APP_API_URL}${MPEG_STREAM_ENDPOINT}
-ARG REACT_APP_WEB_PAGE_TITLE=${WEB_PAGE_TITLE}
-ARG REACT_APP_WEB_HEADER=${WEB_HEADER}
-ARG REACT_APP_WEB_SUBTITLE=${WEB_SUBTITLE}
-ARG REACT_APP_WEB_BACKGROUND_COLOUR=${WEB_BACKGROUND_COLOUR}
-ARG REACT_APP_WEB_ACCENT_COLOUR=${WEB_ACCENT_COLOUR}
-
-
 COPY client /app
-
 WORKDIR /app
-
 RUN yarn install
-
 RUN yarn build
 
 FROM ubuntu:latest as server
-
-ARG PORT=4000
-ARG OGG_STREAM_ENDPOINT=/stream
-ARG MPEG_STREAM_ENDPOINT=/backup_stream
-ARG ICECAST_PASSWORD=hackme
-
-ENV PORT=${PORT}
-ENV OGG_STREAM_ENDPOINT=${OGG_STREAM_ENDPOINT}
-ENV MPEG_STREAM_ENDPOINT=${MPEG_STREAM_ENDPOINT}
-ENV ICECAST_PASSWORD=${ICECAST_PASSWORD}
 
 RUN apt update && apt upgrade -y 
 
@@ -53,11 +17,8 @@ RUN npm install -g yarn ts-node
 
 RUN mkdir -p /var/log/ices
 
-COPY casting/icecast.xml /etc/icecast2/icecast.xml
-COPY casting/ices-playlist.xml /etc/ices2/ices-playlist.xml
-
-RUN sed -i "s/hackme/$ICECAST_PASSWORD/g" /etc/icecast2/icecast.xml
-RUN sed -i "s/hackme/$ICECAST_PASSWORD/g" /etc/ices2/ices-playlist.xml
+COPY casting/icecast.xml /etc/icecast2/icecast.xml.bak
+COPY casting/ices-playlist.xml /etc/ices2/ices-playlist.xml.bak
 
 COPY server /app
 COPY --from=client /app/build /app/build
@@ -65,7 +26,5 @@ COPY --from=client /app/build /app/build
 WORKDIR /app
 
 RUN yarn install
-
-EXPOSE ${PORT}
 
 ENTRYPOINT [ "yarn", "start" ]

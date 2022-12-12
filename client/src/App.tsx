@@ -29,12 +29,16 @@ import {
 } from '@mui/icons-material';
 import { io, Socket } from 'socket.io-client';
 import axios from 'axios';
+import { ThemeProvider } from '@mui/material';
+import { AppConfig, createTheme } from "@mui/material/styles"
+import {Helmet} from "react-helmet";
+
 
 export const App = (): JSX.Element => {
   const [socket, setSocket] = useState<Socket>();
   const [tracks, setTracks] = useState(0);
   const [playing, setPlaying] = useState<boolean>(false);
-  const [streamUrl, setStreamUrl] = useState<string>(process.env.REACT_APP_STREAM_URL || '');
+  const [streamUrl, setStreamUrl] = useState<string>('/stream');
   const [volume, setVolume] = useState<number>(parseFloat(localStorage.getItem('volume') || '0.15'));
   const playerRef = useRef<HTMLAudioElement>(null);
   const [listeners, setListeners] = useState(0);
@@ -42,20 +46,37 @@ export const App = (): JSX.Element => {
     artist: '',
     title: '',
   });
+  const [config, setConfig] = useState<AppConfig>({
+    accentColor: "",
+    backgroundColor: "",
+    contact: "",
+    header: "",
+    subtitle: "",
+    title: ""
+  });
 
   useEffect(() => {
     if (playerRef.current) {
       playerRef.current.volume = volume;
       if (!playerRef.current.canPlayType || playerRef.current.canPlayType('audio/ogg') === '') {
-        setStreamUrl(process.env.REACT_APP_BACKUP_STREAM_URL || '');
+        setStreamUrl('/backup_stream');
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playerRef]);
 
   useEffect(() => {
+    const getConfig = async (): Promise<void> => {
+      const url = `/config.json`;
+      const { data } = await axios.get<AppConfig>(url);
+      setConfig(data);
+    };
+    getConfig();
+  }, []);
+
+  useEffect(() => {
     const getTrackCount = async (): Promise<void> => {
-      const url = `${process.env.REACT_APP_API_URL}/trackcount`;
+      const url = `/trackcount`;
       const { data } = await axios.get<number>(url);
       setTracks(data);
     };
@@ -63,7 +84,8 @@ export const App = (): JSX.Element => {
   }, []);
 
   useEffect(() => {
-    const socket = io(process.env.REACT_APP_SOCKET_IO_CONNECTION || '', {
+    const socketUrl = `ws${window.location.protocol === "https:" ? "s" : ""}://${window.location.host}/`;
+    const socket = io(socketUrl, {
       reconnectionDelayMax: 10000,
       reconnection: true,
       reconnectionAttempts: 10,
@@ -86,7 +108,7 @@ export const App = (): JSX.Element => {
         navigator.mediaSession.metadata = new MediaMetadata({
           artist,
           title,
-          album: process.env.REACT_APP_WEB_HEADER,
+          album: config?.header,
           artwork: [
             {
               src: '/artwork.png',
@@ -137,51 +159,60 @@ export const App = (): JSX.Element => {
   };
 
   return (
-    <AppComponent>
-      <audio ref={playerRef} onError={handleAudioError} />
-      <Background autoPlay muted loop src="bg.mp4" />
-      <Container>
-        <TextContainer>
-          <Title>{process.env.REACT_APP_WEB_HEADER}</Title>
-          <Subtitle>{process.env.REACT_APP_WEB_SUBTITLE}</Subtitle>
-        </TextContainer>
-        <MediaContainer>
-          <MediaButton onClick={handleMediaButtonClick}>
-            {playing ? <PauseOutlined /> : <PlayArrowOutlined />}
-          </MediaButton>
-          <MediaInfoBox>
-            <SongDetails>
-              <SongTitle replaceSpeed={50}>{currentlyPlaying.title}</SongTitle>
-              <SongArtist replaceSpeed={50}>{currentlyPlaying.artist}</SongArtist>
-            </SongDetails>
-            <VolumeBox>
-              {volume === 0 ? <VolumeOffOutlined /> : <VolumeDownOutlined />}
-              <VolumeSlider
-                value={volume}
-                min={0}
-                max={0.3}
-                step={0.01}
-                onChange={(_event, value): void => handleVolumeChanged(value as number)}
-              />
-            </VolumeBox>
-          </MediaInfoBox>
-          <DataContainer>
-            <DataChild flex="initial" title={`${listeners} listening now!`}>
-              <HeadphonesOutlined /> {listeners}
-            </DataChild>
-            <Spacer>/ /</Spacer>
-            <DataChild title={`${tracks} tracks loaded!`}>
-              <LibraryMusicOutlined />
-              {tracks}
-            </DataChild>
-            <Spacer>/ /</Spacer>
-            <DataChild flex={0.5} title={`Version ${process.env.REACT_APP_VERSION}`}>
-              {process.env.REACT_APP_VERSION}
-            </DataChild>
-          </DataContainer>
-        </MediaContainer>
-      </Container>
-      {process.env.REACT_APP_CONTACT && <GetInTouch>{process.env.REACT_APP_CONTACT}</GetInTouch>}
-    </AppComponent>
+    <ThemeProvider theme={createTheme({config})}>
+      <AppComponent>
+        <Helmet>
+          <title>{config.title}</title>
+          <meta name="description" content={config.subtitle} />
+          <link rel="mask-icon" href="/safari-pinned-tab.svg" color={config.accentColor} />
+          <meta name="msapplication-TileColor" content={config.accentColor} />
+          <meta name="theme-color" content={config.accentColor} />
+        </Helmet>
+        <audio ref={playerRef} onError={handleAudioError} />
+        <Background autoPlay muted loop src="bg.mp4" />
+        <Container>
+          <TextContainer>
+            <Title>{config?.header}</Title>
+            <Subtitle>{config?.subtitle}</Subtitle>
+          </TextContainer>
+          <MediaContainer>
+            <MediaButton onClick={handleMediaButtonClick}>
+              {playing ? <PauseOutlined /> : <PlayArrowOutlined />}
+            </MediaButton>
+            <MediaInfoBox>
+              <SongDetails>
+                <SongTitle replaceSpeed={50}>{currentlyPlaying.title}</SongTitle>
+                <SongArtist replaceSpeed={50}>{currentlyPlaying.artist}</SongArtist>
+              </SongDetails>
+              <VolumeBox>
+                {volume === 0 ? <VolumeOffOutlined /> : <VolumeDownOutlined />}
+                <VolumeSlider
+                  value={volume}
+                  min={0}
+                  max={0.3}
+                  step={0.01}
+                  onChange={(_event, value): void => handleVolumeChanged(value as number)}
+                />
+              </VolumeBox>
+            </MediaInfoBox>
+            <DataContainer>
+              <DataChild flex="initial" title={`${listeners} listening now!`}>
+                <HeadphonesOutlined /> {listeners}
+              </DataChild>
+              <Spacer>/ /</Spacer>
+              <DataChild title={`${tracks} tracks loaded!`}>
+                <LibraryMusicOutlined />
+                {tracks}
+              </DataChild>
+              <Spacer>/ /</Spacer>
+              <DataChild flex={0.5} title={`Version ${process.env.REACT_APP_VERSION}`}>
+                {process.env.REACT_APP_VERSION}
+              </DataChild>
+            </DataContainer>
+          </MediaContainer>
+        </Container>
+        {config?.contact && <GetInTouch>{config?.contact}</GetInTouch>}
+      </AppComponent>
+    </ThemeProvider>
   );
 };

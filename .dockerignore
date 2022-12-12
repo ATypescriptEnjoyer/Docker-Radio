@@ -4,3 +4,7 @@
 ./casting/playlist.txt
 ./casting/songs
 **/.env
+./data
+./data_example
+LICENSE
+README.md

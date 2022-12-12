@@ -5,17 +5,18 @@ import request from "request";
 import { Server, Socket } from "socket.io";
 import { promisify } from "util";
 import { spawn, exec } from "child_process";
+import path from "path";
 
 const execAsync = promisify(exec);
 
 const app = express();
 const server = http.createServer(app);
-const PORT = process.env.PORT || 4000;
+const PORT = 4000;
 
 const icecastUrl = "http://localhost:8000";
 const metadataEndpoint = "/status-json.xsl";
-const oggStream = process.env.OGG_STREAM_ENDPOINT || "/stream";
-const mpegStream = process.env.MPEG_STREAM_ENDPOINT || "/backup_stream";
+const oggStream = "/stream";
+const mpegStream = "/backup_stream";
 
 const sourceOggUrl = `${icecastUrl}${oggStream}`;
 const sourceMpegUrl = `${icecastUrl}${mpegStream}`;
@@ -161,6 +162,7 @@ const ffmpegArgs = [
   )}`,
 ];
 
+startService("Icecast2 config", "./setup.sh");
 startService("Icecast2", "/etc/init.d/icecast2", ["start"], "/etc/ices2");
 setTimeout(() => {
   startService(

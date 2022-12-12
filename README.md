@@ -14,32 +14,17 @@ services:
   caster:
     build:
       dockerfile: Dockerfile
-      args:
-        #Global args
-        OGG_STREAM_ENDPOINT: /stream
-        MPEG_STREAM_ENDPOINT: /backup_stream
-
-        #API/Services Args
-        PORT: 4000
-        ICECAST_PASSWORD: password #As long as you dont forward port 8000 this does not need to be secure as its not exposed
-
-        #Frontend Build Args
-        WEB_PAGE_TITLE: My Radio Station - 24/7 Radio!
-        WEB_HEADER: My Radio Station
-        WEB_SUBTITLE: 24/7 Fun Radio Station!
-        WEB_BACKGROUND_COLOUR: "#1D1F2B"
-        WEB_ACCENT_COLOUR: "#32CD32"
-        SOCKET_IO_PROTOCOL: wss # WSS,WS,HTTPS,HTTP
-        DOMAIN: myradiostation.live
-        WEB_PROTOCOL: https
-
+    environment:
+      #API/Services Args
+      ICECAST_PASSWORD: password #As long as you dont forward port 8000 this does not need to be secure as its not exposed
     container_name: caster
     restart: always
     ports:
       - 4000:4000 #If you're using the reverse proxy, you don't need to expose any ports
     volumes:
-      - ./casting/playlist.txt:/etc/ices2/playlist.txt
-      - ./casting/songs:/etc/ices2/songs
+      - ./data/public:/app/data/public
+      - ./data/playlist.txt:/etc/ices2/playlist.txt
+      - ./data/songs:/etc/ices2/songs
 ```
 
 ### NGINX reverse proxy config
@@ -81,6 +66,10 @@ server {
         }
 }
 ```
+
+### Configuration (READ THIS, VERY IMPORTANT!)
+
+Check `data_example` for example on how your `data` folder should be laid out! Edit `data/public/config.json` to make sure your configuration is correct, then add a `bg.mp4` for a background! All the other stuff is manifest files and not required, but makes your users experience better
 
 ### Converting MP3s to Vorbis OGG
 

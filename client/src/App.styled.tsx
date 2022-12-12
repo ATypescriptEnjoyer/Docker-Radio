@@ -1,13 +1,11 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React from 'react';
 import { Slider } from '@mui/material';
-import styled from 'styled-components';
 import { Typed } from './components';
+import { styled } from '@mui/material/styles';
 
-const bgColour = process.env.REACT_APP_WEB_BACKGROUND_COLOUR;
-const accentColour = process.env.REACT_APP_WEB_ACCENT_COLOUR;
 
-export const App = styled.div`
+export const App = styled("div")`
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -19,7 +17,7 @@ export const App = styled.div`
   }
 `;
 
-export const Background = styled.video`
+export const Background = styled("video")`
   width: 100vw;
   height: 100vh;
   position: absolute;
@@ -30,14 +28,14 @@ export const Background = styled.video`
   filter: brightness(10%);
 `;
 
-export const TextContainer = styled.div`
+export const TextContainer = styled("div")`
   @media (max-width: 600px) {
     margin-top: 24px;
     flex: 1;
   }
 `;
 
-export const Container = styled.div`
+export const Container = styled("div")`
   display: flex;
   height: 40%;
   width: 80%;
@@ -48,7 +46,7 @@ export const Container = styled.div`
   }
 `;
 
-export const Title = styled.h1`
+export const Title = styled("h1")`
   color: white;
   font-size: 70px;
   padding: 0;
@@ -59,18 +57,18 @@ export const Title = styled.h1`
   }
 `;
 
-export const Subtitle = styled.h2`
+export const Subtitle = styled("h2")`
   padding: 0;
   margin: 0 0 32px 0;
   color: white;
   font-size: 30px;
 `;
 
-export const MediaButton = styled.button`
+export const MediaButton = styled("button")`
   aspect-ratio: 1/1;
   min-width: 64px;
   height: 100%;
-  background-color: ${bgColour};
+  background-color: ${(props): string => props.theme.config.backgroundColor};
   border: 0;
   display: flex;
   align-items: center;
@@ -83,7 +81,7 @@ export const MediaButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    color: ${accentColour};
+    color: ${(props): string => props.theme.config.accentColor};
   }
 
   &:active {
@@ -100,12 +98,12 @@ export const MediaButton = styled.button`
   }
 `;
 
-export const MediaInfoBox = styled.div`
+export const MediaInfoBox = styled("div")`
   min-height: 64px;
   height: auto;
   padding: 16px;
   width: 100%;
-  background-color: ${bgColour};
+  background-color: ${(props): string => props.theme.config.backgroundColor};
   display: flex;
   padding-left: 16px;
   box-sizing: border-box;
@@ -118,7 +116,7 @@ export const MediaInfoBox = styled.div`
   }
 `;
 
-export const MediaContainer = styled.div`
+export const MediaContainer = styled("div")`
   display: grid;
   grid-template-columns: auto 1fr;
   grid-template-rows: max-content auto;
@@ -126,7 +124,7 @@ export const MediaContainer = styled.div`
   grid-row-gap: 12px;
 `;
 
-export const SongDetails = styled.div`
+export const SongDetails = styled("div")`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -136,7 +134,7 @@ export const SongDetails = styled.div`
 
 export const SongTitle = styled(Typed)`
   font-size: 20px;
-  color: ${accentColour};
+  color: ${(props): string => props.theme.config.accentColor};
   margin: 0;
   padding: 0;
   text-transform: uppercase;
@@ -152,7 +150,7 @@ export const SongArtist = styled(Typed)`
   flex: 1;
 `;
 
-export const VolumeBox = styled.div`
+export const VolumeBox = styled("div")`
   color: white;
   display: flex;
   width: 200px;
@@ -170,7 +168,7 @@ export const VolumeSlider = styled(Slider)`
   max-width: 150px;
 
   && {
-    color: ${accentColour};
+    color: ${(props): string => props.theme.config.accentColor};
 
     span:first-child {
       color: white;
@@ -182,8 +180,8 @@ export const VolumeSlider = styled(Slider)`
   }
 `;
 
-export const DataContainer = styled.div`
-  color: ${accentColour};
+export const DataContainer = styled("div")`
+  color: ${(props): string => props.theme.config.accentColor};
   font-size: 16px;
   grid-column-start: 2;
   grid-row-start: 2;
@@ -201,14 +199,14 @@ export const DataContainer = styled.div`
 
   @media (max-width: 600px) {
     height: 100%;
-    background-color: ${bgColour};
+    background-color: ${(props): string => props.theme.config.backgroundColor};
     justify-content: space-evenly;
     gap: 0px;
     padding: 0 16px;
   }
 `;
 
-export const GetInTouch = styled.div`
+export const GetInTouch = styled("div")`
   position: absolute;
   bottom: 16px;
   right: 16px;
@@ -220,11 +218,11 @@ export const GetInTouch = styled.div`
   }
 `;
 
-export const Spacer = styled.span`
+export const Spacer = styled("span")`
   margin: 0 8px;
 `;
 
-export const DataChild = styled.div<{ flex?: string | number }>`
+export const DataChild = styled("div")<{ flex?: string | number }>`
   display: flex;
   justify-content: center;
   align-items: center;

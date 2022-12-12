@@ -4,12 +4,6 @@ build
 *.ogg
 *.mp4
 
-playlist.txt
-
 .env
 
-manifest.json
-*.png
-favicon.ico
-*.svg
-*.xml
+data
