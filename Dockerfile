@@ -22,6 +22,6 @@ COPY --from=client /app/build /app/build
 
 WORKDIR /app
 
-RUN yarn install --production
+RUN yarn install && yarn build && yarn install --production
 
 ENTRYPOINT [ "yarn", "start" ]

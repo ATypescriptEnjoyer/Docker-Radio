@@ -5,7 +5,6 @@ import request from "request";
 import { Server, Socket } from "socket.io";
 import { promisify } from "util";
 import { spawn, exec } from "child_process";
-import path from "path";
 
 const execAsync = promisify(exec);
 
