@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <ices>
     <!-- run in background -->
-    <background>0</background>
+    <background>1</background>
     <!-- where logs, etc go. -->
     <logpath>/var/log/ices</logpath>
     <logfile>ices.log</logfile>

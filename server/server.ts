@@ -1,4 +1,3 @@
-import "dotenv/config";
 import express from "express";
 import http from "http";
 import request from "request";
@@ -25,13 +24,13 @@ let users = [];
 let metadataCheckInterval: NodeJS.Timeout | null = null;
 let currentMetadata = { artist: "", title: "" };
 
-const startService = (
+const startService = async (
   serviceName: string,
   command: string,
   args: string[] = [],
   workingDir = "",
   restartOnClose = false
-): void => {
+): Promise<void> => {
   const processLog = (logText: string) => {
     console.log(`${serviceName}: ${logText}`);
   };
@@ -41,13 +40,16 @@ const startService = (
   const exec = spawn(processName, args, { cwd: workingDir });
   exec.stdout.on("data", processLog);
   exec.stderr.on("data", processLog);
-  if (restartOnClose) {
+  return new Promise((resolve) => {
     exec.once("close", () => {
       exec.stdout.off("data", processLog);
       exec.stderr.off("data", processLog);
-      startService(serviceName, command, args, workingDir, restartOnClose); //restart service
+      if(restartOnClose) {
+        startService(serviceName, command, args, workingDir, restartOnClose); //restart service
+      }
+      resolve();
     });
-  }
+  });
 
 };
 
@@ -149,8 +151,6 @@ const ffmpegArgs = [
   "-vn",
   "-codec:a",
   "libmp3lame",
-  "-b:a",
-  "64k",
   "-f",
   "mp3",
   "-content_type",
@@ -161,17 +161,9 @@ const ffmpegArgs = [
   )}`,
 ];
 
-startService("Icecast2 config", "./setup.sh");
-startService("Icecast2", "/etc/init.d/icecast2", ["start"], "/etc/ices2");
-setTimeout(() => {
-  startService(
-    "Ices2",
-    "ices2",
-    ["/etc/ices2/ices-playlist.xml"],
-    "/etc/ices2",
-    true
-  );
-  setTimeout(() => {
-    startService("MPEG Relay", "ffmpeg", ffmpegArgs, "", true);
-  }, 5000);
-}, 5000);
+await startService("Icecast2 config", "sh", ["/app/setup.sh"], "/app");
+await startService("Icecast2", "icecast", ["-b", "-c", "/etc/icecast.xml"]);
+Promise.all([
+  startService("Ices2", "ices", ["/etc/ices2/ices-playlist.xml"], "/etc/ices2", true),
+  startService("MPEG Relay", "ffmpeg", ffmpegArgs, "", true)
+]);
