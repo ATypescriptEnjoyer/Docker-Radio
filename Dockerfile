@@ -12,7 +12,8 @@ RUN apk add icecast ices curl ffmpeg \
     && touch /var/log/icecast2/error.log \
     && touch /var/log/icecast2/access.log \
     && adduser -D alpine \
-    && chown -R alpine:alpine /var/log/icecast2/
+    && chown -R alpine:alpine /var/log/icecast2/ \
+    && chown -R alpine:alpine /usr/share/icecast
 
 COPY build_files/icecast.xml /etc/icecast.xml
 COPY build_files/ices-playlist.xml /etc/ices2/ices-playlist.xml
