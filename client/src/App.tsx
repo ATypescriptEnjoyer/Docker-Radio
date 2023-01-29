@@ -125,7 +125,7 @@ export const App = (): JSX.Element => {
       socket.disconnect();
       setSocket(undefined);
     };
-  }, []);
+  }, [playing, config?.header]);
 
   const handleMediaButtonClick = async (): Promise<void> => {
     if (!playerRef.current) return;
