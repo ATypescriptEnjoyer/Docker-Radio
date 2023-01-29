@@ -6,7 +6,7 @@ RUN yarn install && yarn build
 
 FROM node:16.3.0-alpine as server
 
-RUN apk add icecast ices curl ffmpeg \
+RUN apk add icecast ices curl ffmpeg --no-cache \
     && mkdir -p /var/log/ices \
     && mkdir -p /var/log/icecast2/ \
     && touch /var/log/icecast2/error.log \
@@ -22,7 +22,7 @@ COPY server /app
 
 WORKDIR /app
 
-RUN yarn install && yarn build && yarn install --production
+RUN yarn install && yarn build && yarn install --production && yarn cache clean
 
 COPY --from=client /app/build /app/build
 
