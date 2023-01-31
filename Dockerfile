@@ -1,10 +1,10 @@
-FROM node:16.3.0-alpine as client
+FROM node:18-alpine as client
 
 COPY client /app
 WORKDIR /app
 RUN yarn install && yarn build
 
-FROM node:16.3.0-alpine as server
+FROM node:18-alpine as server
 
 RUN apk add icecast ices curl ffmpeg --no-cache \
     && mkdir -p /var/log/ices \
