@@ -24,6 +24,6 @@ WORKDIR /app
 
 RUN yarn install && yarn build && yarn install --production && yarn cache clean
 
-COPY --from=client /app/build /app/build
+COPY --from=client /app/dist /app/build
 
 ENTRYPOINT [ "yarn", "start" ]

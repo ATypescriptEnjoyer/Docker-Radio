@@ -205,8 +205,8 @@ export const App = (): JSX.Element => {
                 {tracks}
               </DataChild>
               <Spacer>/ /</Spacer>
-              <DataChild flex={0.5} title={`Version ${process.env.REACT_APP_VERSION}`}>
-                {process.env.REACT_APP_VERSION}
+              <DataChild flex={0.5} title={`Version ${import.meta.env.VITE_APP_VERSION}`}>
+                {import.meta.env.VITE_APP_VERSION}
               </DataChild>
             </DataContainer>
           </MediaContainer>
