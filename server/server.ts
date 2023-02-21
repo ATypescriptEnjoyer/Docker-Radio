@@ -4,6 +4,7 @@ import request from "request";
 import { Server, Socket } from "socket.io";
 import { promisify } from "util";
 import { spawn, exec } from "child_process";
+import fs from "fs/promises";
 
 const execAsync = promisify(exec);
 
@@ -31,8 +32,10 @@ const startService = async (
   workingDir = "",
   restartOnClose = false
 ): Promise<void> => {
-  const processLog = (logText: string) => {
-    console.log(`${serviceName}: ${logText}`);
+  const processLog = async (logText: string) => {
+    const date = new Date();
+    const logFileLocation = `logs/${serviceName.toLowerCase()}-${date.getDate()}-${date.getMonth()}.log`;
+    await fs.appendFile(logFileLocation, logText);
   };
   console.log(`Starting ${serviceName}`);
   const commandSplit = command.split(" ");
@@ -44,13 +47,12 @@ const startService = async (
     exec.once("close", () => {
       exec.stdout.off("data", processLog);
       exec.stderr.off("data", processLog);
-      if(restartOnClose) {
+      if (restartOnClose) {
         startService(serviceName, command, args, workingDir, restartOnClose); //restart service
       }
       resolve();
     });
   });
-
 };
 
 const checkMetadata = () => {
@@ -136,7 +138,7 @@ app.get(mpegStream, (req, res) =>
   req.pipe(request.get(sourceMpegUrl)).pipe(res)
 );
 
-app.get("/trackcount", async (req, res) => {
+app.get("/trackcount", async (_, res) => {
   const { stdout } = await execAsync("wc -l < /etc/ices2/playlist.txt");
   const count = parseInt(stdout.trim()) || 0;
   res.send((count + 1).toString()); // +1 because last song doesnt get added to wc -l command
@@ -145,7 +147,6 @@ app.get("/trackcount", async (req, res) => {
 server.listen(PORT);
 
 const ffmpegArgs = [
-  "-re",
   "-i",
   sourceOggUrl,
   "-vn",
@@ -164,6 +165,12 @@ const ffmpegArgs = [
 await startService("Icecast2 config", "sh", ["/app/setup.sh"], "/app");
 await startService("Icecast2", "icecast", ["-b", "-c", "/etc/icecast.xml"]);
 Promise.all([
-  startService("Ices2", "ices", ["/etc/ices2/ices-playlist.xml"], "/etc/ices2", true),
-  startService("MPEG Relay", "ffmpeg", ffmpegArgs, "", true)
+  startService(
+    "Ices2",
+    "ices",
+    ["/etc/ices2/ices-playlist.xml"],
+    "/etc/ices2",
+    true
+  ),
+  startService("MPEG_Relay", "ffmpeg", ffmpegArgs, "", true),
 ]);

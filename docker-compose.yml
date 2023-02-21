@@ -4,13 +4,13 @@ services:
     build:
       dockerfile: Dockerfile
     environment:
-      #API/Services Args
       ICECAST_PASSWORD: password #As long as you dont forward port 8000 this does not need to be secure as its not exposed
     container_name: caster
     restart: always
     ports:
       - 4000:4000 #If you're using the reverse proxy, you don't need to expose any ports
     volumes:
+      - ./data/logs:/app/logs
       - ./data/public:/app/data/public
       - ./data/playlist.txt:/etc/ices2/playlist.txt
       - ./data/songs:/etc/ices2/songs

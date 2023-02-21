@@ -22,7 +22,7 @@ COPY server /app
 
 WORKDIR /app
 
-RUN yarn install && yarn build && yarn install --production && yarn cache clean
+RUN yarn install && yarn build && yarn install --production && yarn cache clean && mkdir logs
 
 COPY --from=client /app/dist /app/build
 
